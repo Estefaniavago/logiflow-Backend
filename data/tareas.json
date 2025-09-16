@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "titulo": "Planificar ruta de entrega",
+    "estado": "pendiente",
+    "fechaInicio": "2025-09-16",
+    "fechaFin": "2025-09-17",
+    "prioridad": "alta",
+    "empleado": "Juan Pérez",
+    "observaciones": "Ruta Buenos Aires - Córdoba"
+  },
+  {
+    "id": 2,
+    "titulo": "Preparación de pedido",
+    "estado": "en proceso",
+    "fechaInicio": "2025-09-15",
+    "fechaFin": "2025-09-16",
+    "prioridad": "media",
+    "empleado": "María López",
+    "observaciones": "Pedido número 1023"
+  },
+  {
+    "id": 3,
+    "titulo": "Inventario cíclico",
+    "estado": "finalizada",
+    "fechaInicio": "2025-09-10",
+    "fechaFin": "2025-09-12",
+    "prioridad": "baja",
+    "empleado": "Carlos Díaz",
+    "observaciones": "Revisión bodega central"
+  }
+]
