@@ -1,5 +1,5 @@
 [
-  { "id": 1, "nombre": "operaciones" },
-  { "id": 2, "nombre": "almacen" },
-  { "id": 3, "nombre": "administracion" }
+  { "id": 1, "nombre": "Operaciones" },
+  { "id": 2, "nombre": "Almacenes" },
+  { "id": 3, "nombre": "Administración" }
 ]

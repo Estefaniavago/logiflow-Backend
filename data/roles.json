@@ -1,5 +1,5 @@
 [
-  { "id": 1, "nombre": "administrador" },
-  { "id": 2, "nombre": "operador" },
-  { "id": 3, "nombre": "supervisor" }
+  { "id": 1, "nombre": "Administrador" },
+  { "id": 2, "nombre": "Operador" },
+  { "id": 3, "nombre": "Supervisor" }
 ]

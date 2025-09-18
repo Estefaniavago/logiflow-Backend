@@ -1,0 +1,12 @@
+{
+  "Operaciones": [
+    "Planificar ruta de entrega",
+    "Asignar transportista",
+    "Registrar incidencia en ruta"
+  ],
+  "Almacén": [
+    "Control de ingreso de mercadería",
+    "Preparación de pedido",
+    "Inventario cíclico"
+  ]
+}

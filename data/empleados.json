@@ -1,1 +1,57 @@
-[]
+[
+  {
+    "id": 2,
+    "nombre": "María Gómez",
+    "dni": "23456789",
+    "email": "maria.gomez@example.com",
+    "telefono": "299-2345678",
+    "areaId": 2,
+    "rolId": 2,
+    "fechaIngreso": "2025-09-19",
+    "activo": true
+  },
+  {
+    "id": 3,
+    "nombre": "Carlos Ruiz",
+    "dni": "34567890",
+    "email": "carlos.ruiz@example.com",
+    "telefono": "299-3456789",
+    "areaId": 3,
+    "rolId": 3,
+    "fechaIngreso": "2025-09-20",
+    "activo": false
+  },
+  {
+    "id": 4,
+    "nombre": "Ana Martínez",
+    "dni": "45678901",
+    "email": "ana.martinez@example.com",
+    "telefono": "299-4567890",
+    "areaId": 1,
+    "rolId": 2,
+    "fechaIngreso": "2025-09-21",
+    "activo": true
+  },
+  {
+    "id": 5,
+    "nombre": "Luis Fernández",
+    "dni": "56789012",
+    "email": "luis.fernandez@example.com",
+    "telefono": "299-5678901",
+    "areaId": 2,
+    "rolId": 1,
+    "fechaIngreso": "2025-09-22",
+    "activo": true
+  },
+  {
+    "id": 6,
+    "nombre": "Juan Pérez",
+    "dni": "33333333",
+    "email": "juan.perez@email.com",
+    "telefono": "2994001234",
+    "areaId": 1,
+    "rolId": 2,
+    "fechaIngreso": "2025-09-18",
+    "activo": true
+  }
+]

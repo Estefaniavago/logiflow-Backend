@@ -1,32 +1,115 @@
 [
   {
     "id": 1,
-    "titulo": "Planificar ruta de entrega",
-    "estado": "pendiente",
-    "fechaInicio": "2025-09-16",
-    "fechaFin": "2025-09-17",
+    "titulo": "Planificar ruta A",
+    "descripcion": "Planificación de ruta de entrega",
+    "areaId": 1,
+    "tipoTarea": "Planificar ruta de entrega",
+    "empleadoId": 2,
+    "atributos": {
+      "origen": "Depósito Central",
+      "destino": "Sucursal Norte",
+      "fechaEntrega": "2025-09-25",
+      "vehiculoAsignado": "Camión 12",
+      "comentarios": "Ruta con alta congestión"
+    },
     "prioridad": "alta",
-    "empleado": "Juan Pérez",
-    "observaciones": "Ruta Buenos Aires - Córdoba"
+    "estado": "pendiente",
+    "fechaCreacion": "2025-09-18"
   },
   {
     "id": 2,
-    "titulo": "Preparación de pedido",
-    "estado": "en proceso",
-    "fechaInicio": "2025-09-15",
-    "fechaFin": "2025-09-16",
+    "titulo": "Asignar transportista B",
+    "descripcion": "Asignación de transportista",
+    "areaId": 1,
+    "tipoTarea": "Asignar transportista",
+    "empleadoId": 3,
+    "atributos": {
+      "transportistaId": 5,
+      "vehiculoAsignado": "Camión 8",
+      "fechaAsignacion": "2025-09-19",
+      "rutaPlanificada": "Ruta 5",
+      "comentarios": "Transporte urgente"
+    },
     "prioridad": "media",
-    "empleado": "María López",
-    "observaciones": "Pedido número 1023"
+    "estado": "pendiente",
+    "fechaCreacion": "2025-09-18"
   },
   {
     "id": 3,
-    "titulo": "Inventario cíclico",
-    "estado": "finalizada",
-    "fechaInicio": "2025-09-10",
-    "fechaFin": "2025-09-12",
+    "titulo": "Registrar incidencia C",
+    "descripcion": "Registrar incidencia en ruta",
+    "areaId": 1,
+    "tipoTarea": "Registrar incidencia en ruta",
+    "empleadoId": 2,
+    "atributos": {
+      "descripcionIncidencia": "Retraso por tránsito",
+      "ubicacionIncidencia": "Avenida Central",
+      "fechaIncidencia": "2025-09-22",
+      "impacto": "Entrega retrasada",
+      "accionesTomadas": "Notificar cliente",
+      "estadoIncidencia": "pendiente"
+    },
+    "prioridad": "alta",
+    "estado": "pendiente",
+    "fechaCreacion": "2025-09-18"
+  },
+  {
+    "id": 4,
+    "titulo": "Control ingreso mercadería D",
+    "descripcion": "Control de ingreso de mercadería",
+    "areaId": 2,
+    "tipoTarea": "Control de ingreso de mercaderia",
+    "empleadoId": 4,
+    "atributos": {
+      "productoId": 101,
+      "cantidad": 50,
+      "proveedor": "Proveedor X",
+      "fechaIngreso": "2025-09-18",
+      "almacenDestino": "Almacén Sur",
+      "observaciones": "Todo en orden"
+    },
+    "prioridad": "media",
+    "estado": "pendiente",
+    "fechaCreacion": "2025-09-18"
+  },
+  {
+    "id": 5,
+    "titulo": "Preparación pedido E",
+    "descripcion": "Preparación de pedido",
+    "areaId": 2,
+    "tipoTarea": "Preparacion de pedido",
+    "empleadoId": 5,
+    "atributos": {
+      "pedidoId": 202,
+      "productos": ["Producto A", "Producto B"],
+      "fechaPreparacion": "2025-09-20",
+      "responsable": "Empleado 5",
+      "estadoPreparacion": "pendiente",
+      "comentarios": "Revisar stock"
+    },
     "prioridad": "baja",
-    "empleado": "Carlos Díaz",
-    "observaciones": "Revisión bodega central"
+    "estado": "pendiente",
+    "fechaCreacion": "2025-09-18"
+  },
+  {
+    "id": 6,
+    "titulo": "Inventario cíclico F",
+    "descripcion": "Inventario cíclico de productos",
+    "areaId": 2,
+    "tipoTarea": "Inventario ciclico",
+    "empleadoId": 4,
+    "atributos": {
+      "productoId": 103,
+      "cantidadRegistrada": 30,
+      "cantidadEsperada": 32,
+      "fechaConteo": "2025-09-18",
+      "responsable": "Empleado 4",
+      "diferencia": -2,
+      "observaciones": "Faltante"
+    },
+    "prioridad": "alta",
+    "estado": "pendiente",
+    "fechaCreacion": "2025-09-18"
   }
 ]
