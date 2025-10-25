@@ -2,6 +2,16 @@ const express = require("express");
 const app = express();
 const path = require("path");
 const { validarDatos, manejarErrores } = require("./middlewares/logger");
+const conectarDB = require("./config/db");
+
+conectarDB();
+
+// CONFIGURACIÓN PUG 
+
+app.set('view engine', 'pug');
+
+app.set('views', path.join(__dirname, 'views'));
+
 
 app.set('json spaces', 2);
 
@@ -16,6 +26,10 @@ const empleadosRoutes = require("./routes/empleadosRoutes");
 
 app.use("/tareas", tareasRoutes);
 app.use("/empleados", empleadosRoutes);
+
+//  RUTAS PARA VISTAS 
+const viewsRoutes = require('./routes/viewsRoutes');
+app.use("/vistas", viewsRoutes);
 
 // Ruta principal
 app.get("/", (req, res) => {

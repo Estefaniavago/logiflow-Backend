@@ -1,72 +1,29 @@
-﻿//Importaciones y configuración de la ruta
-const fs = require("fs").promises;
-const path = require("path");
+﻿const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
-// Ruta fija del archivo JSON de tareas
-const dataPath = path.join(__dirname, "../../data/tareas.json");
+const TareaSchema = new Schema({
 
-// Clase Tarea y constructor
-class Tarea {
-  constructor({ id, descripcion, areaId, tipoTarea, empleadoId, atributos, prioridad, fechaAsignacion, estado = "pendiente" }) {
-    this.id = id;
-    this.descripcion = descripcion;
-    this.areaId = areaId;
-    this.tipoTarea = tipoTarea;
-    this.empleadoId = empleadoId;
-    this.atributos = atributos || {};
-    this.prioridad = prioridad;
-    this.fechaAsignacion = fechaAsignacion;
-    this.estado = estado;
-    this.fechaCreacion = new Date().toISOString().split('T')[0];
-  }
+  titulo: { type: String, required: true }, 
+  descripcion: { type: String, required: true },
+  areaId: { type: Number, required: true },
+  tipoTarea: { type: String, required: true },
 
-  //Método de la clase tarea que permite actualizar atributos de una tarea existente
-  //sin modificar el id ni la fecha de creación de la tarea
-  actualizar(datos) {
-    Object.keys(datos).forEach(key => {
-      if (key !== 'id' && key !== 'fechaCreacion') {
-        this[key] = datos[key];
-      }
-    });
-  }
 
-  //Métodos estáticos para interactuar con el archivo JSON
+  empleadoId: { type: Schema.Types.ObjectId, ref: "Empleado", default: null },
 
-  //Obtiene todas las tareas
-  static async obtenerTodas() {
-  try {
-    const data = await fs.readFile(dataPath, "utf8");
-    const tareasArray = JSON.parse(data);
-    // Convertir cada objeto en instancia de Tarea
-    return tareasArray.map(t => new Tarea(t));
-  } catch (error) {
-    return [];
-  }
-}
+  atributos: { type: Schema.Types.Mixed, default: {} },
+  prioridad: { type: String, required: true, enum: ["baja", "media", "alta"] },
+  estado: {
+    type: String,
+    default: "pendiente",
+    enum: ["pendiente", "en proceso", "finalizada"],
+  },
 
-  //Guarda todas las tareas en el archivo (JSON formateado)
-  static async guardarTodas(tareas) {
-    await fs.writeFile(dataPath, JSON.stringify(tareas, null, 2), "utf8");
-  }
+  fechaCreacion: { type: Date, default: Date.now },
+  fechaAsignacion: { type: Date },
+  fechaVencimiento: { type: Date },
+  fechaFinalizacion: { type: Date },
+});
 
-  //Genera un nuevo id único
-  static async generarId() {
-    const tareas = await this.obtenerTodas();
-    return tareas.length > 0 ? Math.max(...tareas.map(t => t.id)) + 1 : 1;
-  }
 
-  //Busca una tarea por id
-  static async obtenerPorId(id) {
-    const tareas = await this.obtenerTodas();
-    return tareas.find(t => t.id === id);
-  }
-
- // Devuelve todas las tareas de un área especificada
-static async obtenerPorArea(areaId) {
-  const tareas = await this.obtenerTodas();
-  return tareas.filter(t => t.areaId === parseInt(areaId));
-}
-}
-
-//Exporta la clase
-module.exports = Tarea;
+module.exports = mongoose.model("Tarea", TareaSchema);

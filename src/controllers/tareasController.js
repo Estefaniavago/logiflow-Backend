@@ -1,36 +1,66 @@
-//Importaciones
-//Trae el modelo para manipular datos de las tareas
-
 const Tarea = require("../models/tareasModel");
-const fs = require("fs").promises;
-const path = require("path");
+const Empleado = require("../models/empleadosModel");
+const Area = require("../models/areaModel");
 
-
-//configuracion de rutas
-const empleadosPath = path.join(__dirname, "../../data/empleados.json");
-const areasPath = path.join(__dirname, "../../data/areas.json");
 
 // Define los campos especificos que cada tipo de tarea necesita
-//para validar al crear o editar tareas que no falte ningún dato obligatorio
-
 const atributosPorTarea = {
   // Operaciones
-  "Planificar ruta de entrega": ["origen", "destino", "fechaEntrega", "vehiculoAsignado", "comentarios"],
-  "Asignar transportista": ["transportistaId", "vehiculoAsignado", "fechaAsignacion", "rutaPlanificada", "comentarios"],
-  "Registrar incidencia en ruta": ["descripcionIncidencia", "ubicacionIncidencia", "fechaIncidencia", "impacto", "accionesTomadas", "estadoIncidencia"],
+  "Planificar ruta de entrega": [
+    "origen",
+    "destino",
+    "fechaEntrega",
+    "vehiculoAsignado",
+    "comentarios",
+  ],
+  "Asignar transportista": [
+    "transportistaId",
+    "vehiculoAsignado",
+    "fechaAsignacion",
+    "rutaPlanificada",
+    "comentarios",
+  ],
+  "Registrar incidencia en ruta": [
+    "descripcionIncidencia",
+    "ubicacionIncidencia",
+    "fechaIncidencia",
+    "impacto",
+    "accionesTomadas",
+    "estadoIncidencia",
+  ],
   // Almacenes
-  "Control de ingreso de mercaderia": ["productoId", "cantidad", "proveedor", "fechaIngreso", "almacenDestino", "observaciones"],
-  "Preparacion de pedido": ["pedidoId", "productos", "fechaPreparacion", "responsable", "estadoPreparacion", "comentarios"],
-  "Inventario ciclico": ["productoId", "cantidadRegistrada", "cantidadEsperada", "fechaConteo", "responsable", "diferencia", "observaciones"]
+  "Control de ingreso de mercaderia": [
+    "productoId",
+    "cantidad",
+    "proveedor",
+    "fechaIngreso",
+    "almacenDestino",
+    "observaciones",
+  ],
+  "Preparacion de pedido": [
+    "pedidoId",
+    "productos",
+    "fechaPreparacion",
+    "responsable",
+    "estadoPreparacion",
+    "comentarios",
+  ],
+  "Inventario ciclico": [
+    "productoId",
+    "cantidadRegistrada",
+    "cantidadEsperada",
+    "fechaConteo",
+    "responsable",
+    "diferencia",
+    "observaciones",
+  ],
 };
 
-
-// Listar tareas 
-
+// Listar tareas
 const listarTareas = async (req, res) => {
   try {
-    const tareas = await Tarea.obtenerTodas(); // Obtiene todas las tareas del JSON
-    res.json(tareas); // Devuelve el array de tareas
+    const tareas = await Tarea.find().populate("empleadoId", "nombre email");
+    res.json(tareas);
   } catch (error) {
     console.error("Error en listarTareas:", error);
     res.status(500).json({ error: "No se pudieron leer las tareas" });
@@ -38,129 +68,174 @@ const listarTareas = async (req, res) => {
 };
 
 // Crear tarea
-
-//recibe datos del usuario en body
 const crearTarea = async (req, res) => {
   try {
-    const { titulo, descripcion, areaId, empleadoId, prioridad, fechaVencimiento, tipoTarea, atributos } = req.body;
+    const {
+      titulo,
+      descripcion,
+      areaId,
+      empleadoId,
+      prioridad,
+      fechaVencimiento,
+      tipoTarea,
+      atributos,
+    } = req.body;
 
-    
     // Validación de campos obligatorios generales
     if (!titulo || !descripcion || !areaId || !prioridad || !tipoTarea) {
-      return res.status(400).json({ error: "Faltan datos obligatorios: titulo, descripcion, areaId, prioridad, tipoTarea" });
+      return res.status(400).json({
+        error:
+          "Faltan datos obligatorios: titulo, descripcion, areaId, prioridad, tipoTarea",
+      });
     }
-if (!atributosPorTarea[tipoTarea]) {
-  return res.status(400).json({ error: `Tipo de tarea no válido: ${tipoTarea}` });
-}
+    if (!atributosPorTarea[tipoTarea]) {
+      return res
+        .status(400)
+        .json({ error: `Tipo de tarea no válido: ${tipoTarea}` });
+    }
     // Validar atributos específicos según tipo de tarea
     const atributosNecesarios = atributosPorTarea[tipoTarea] || [];
     for (const attr of atributosNecesarios) {
-      if (!atributos || atributos[attr] === undefined || atributos[attr] === null) {
-        return res.status(400).json({ error: `Falta el atributo obligatorio para "${tipoTarea}": ${attr}` });
+      if (
+        !atributos ||
+        atributos[attr] === undefined ||
+        atributos[attr] === null
+      ) {
+        return res.status(400).json({
+          error: `Falta el atributo obligatorio para "${tipoTarea}": ${attr}`,
+        });
       }
     }
 
     // Validar empleado que exista si se asigno
     let empleadoValido = null;
     if (empleadoId) {
-      const empleadosData = await fs.readFile(empleadosPath, "utf8");
-      const empleados = JSON.parse(empleadosData);
-      empleadoValido = empleados.find(e => e.id === empleadoId);
-      if (!empleadoValido) return res.status(400).json({ error: "Empleado asignado no existe" });
+      try {
+        empleadoValido = await Empleado.findById(empleadoId);
+        if (!empleadoValido)
+          return res.status(400).json({ error: "Empleado asignado no existe" });
+      } catch (e) {
+        return res
+          .status(400)
+          .json({ error: "El ID de empleado no es válido" });
+      }
     }
 
     // Validar área que exista
-    const areasData = await fs.readFile(areasPath, "utf8");
-    const areas = JSON.parse(areasData);
-    const areaValida = areas.find(a => a.id === areaId);
-    if (!areaValida) return res.status(400).json({ error: "El área especificada no existe" });
+    const areaValida = await Area.findOne({ id: areaId });
+    if (!areaValida)
+      return res.status(400).json({ error: "El área especificada no existe" });
 
-    // Crear la tarea como instancia de la clase
+    // Crear la tarea (usando el modelo de Mongoose)
     const nuevaTarea = new Tarea({
-      id: await Tarea.generarId(),
       titulo,
       descripcion,
       areaId: parseInt(areaId),
-      empleadoId: empleadoValido ? empleadoValido.id : null,
+      empleadoId: empleadoValido ? empleadoValido._id : null,
       prioridad,
       fechaVencimiento,
       tipoTarea,
-      atributos: atributos || {}
+      atributos: atributos || {},
     });
 
-    //guarda la tarea, sobreescribe el json y la agrega
-    const tareas = await Tarea.obtenerTodas();
-    tareas.push(nuevaTarea);
-    await Tarea.guardarTodas(tareas);
+    await nuevaTarea.save();
 
-    res.status(201).json({ mensaje: "Tarea creada correctamente", tarea: nuevaTarea });
-
+    res
+      .status(201)
+      .json({ mensaje: "Tarea creada correctamente", tarea: nuevaTarea });
   } catch (error) {
     console.error("Error en crearTarea:", error);
     res.status(500).json({ error: "Error al crear la tarea" });
   }
 };
 
-
 // Editar tarea
 const editarTarea = async (req, res) => {
   try {
-    const tareaId = parseInt(req.params.id);
-    const tareas = await Tarea.obtenerTodas();
-    const tarea = tareas.find(t => t.id === tareaId);
-    if (!tarea) return res.status(404).json({ error: "Tarea no encontrada" });
+    const tareaId = req.params.id; // _id de Mongo
+    const datos = req.body;
 
-    const { empleadoId, areaId, tipoTarea, atributos } = req.body;
-
-    // Validar empleado si se está cambiando
-    if (empleadoId) {
-      const empleadosData = await fs.readFile(empleadosPath, "utf8");
-      const empleados = JSON.parse(empleadosData);
-      const empleadoValido = empleados.find(e => e.id === empleadoId);
-      if (!empleadoValido) return res.status(400).json({ error: "Empleado asignado no existe" });
+    // --- INICIO DE VALIDACIÓN ---
+    const tareaActual = await Tarea.findById(tareaId);
+    if (!tareaActual) {
+      return res.status(404).json({ error: "Tarea no encontrada" });
     }
 
-    // Validar área si se está cambiando
-    if (areaId) {
-      const areasData = await fs.readFile(areasPath, "utf8");
-      const areas = JSON.parse(areasData);
-      const areaValida = areas.find(a => a.id === areaId);
-      if (!areaValida) return res.status(400).json({ error: "El área especificada no existe" });
-    }
-
-    // Validar atributos obligatorios según tipo de tarea
-    const tipo = tipoTarea || tarea.tipoTarea; // usar el tipo actual si no se está cambiando
-    const atributosNecesarios = atributosPorTarea[tipo] || [];
-    for (const attr of atributosNecesarios) {
-      if (!atributos || atributos[attr] === undefined || atributos[attr] === null) {
-        return res.status(400).json({ error: `Falta el atributo obligatorio para "${tipo}": ${attr}` });
+    if (datos.empleadoId) {
+      try {
+        const empleadoValido = await Empleado.findById(datos.empleadoId);
+        if (!empleadoValido) {
+          return res.status(400).json({ error: "Empleado asignado no existe" });
+        }
+      } catch (e) {
+        return res
+          .status(400)
+          .json({ error: "El ID de empleado no es válido" });
       }
     }
 
-    // Actualizar tarea
-    tarea.actualizar(req.body);
-    await Tarea.guardarTodas(tareas);
+    if (datos.areaId) {
+      const areaValida = await Area.findOne({ id: datos.areaId });
+      if (!areaValida) {
+        return res
+          .status(400)
+          .json({ error: "El área especificada no existe" });
+      }
+    }
 
-    res.json({ mensaje: "Tarea actualizada correctamente", tarea });
+    if (datos.tipoTarea || datos.atributos) {
+      const tipoFinal = datos.tipoTarea || tareaActual.tipoTarea;
+      const atributosFinales = datos.atributos || tareaActual.atributos;
 
+      if (!atributosPorTarea[tipoFinal]) {
+        return res
+          .status(400)
+          .json({ error: `Tipo de tarea no válido: ${tipoFinal}` });
+      }
+
+      const atributosNecesarios = atributosPorTarea[tipoFinal] || [];
+      for (const attr of atributosNecesarios) {
+        if (
+          !atributosFinales ||
+          atributosFinales[attr] === undefined ||
+          atributosFinales[attr] === null
+        ) {
+          return res.status(400).json({
+            error: `Falta el atributo obligatorio para "${tipoFinal}": ${attr}`,
+          });
+        }
+      }
+    }
+    // --- FIN DE VALIDACIÓN ---
+
+    // Excluir campos que no se deben actualizar
+    delete datos.id;
+    delete datos._id;
+    delete datos.fechaCreacion;
+
+    const tareaActualizada = await Tarea.findByIdAndUpdate(
+      tareaId,
+      { $set: datos },
+      { new: true } // Devuelve el documento actualizado
+    );
+
+    res.json({
+      mensaje: "Tarea actualizada correctamente",
+      tarea: tareaActualizada,
+    });
   } catch (error) {
-  console.error("Error en editarTarea:", error);
-  res.status(500).json({ error: error.message });
-}
+    console.error("Error en editarTarea:", error);
+    res.status(500).json({ error: error.message });
   }
+};
 
 // Eliminar tarea
-//lee todas las tareas, busca el inidce que coincida, si no existe error y si existe lo elimina
 const eliminarTarea = async (req, res) => {
   try {
-    const tareaId = parseInt(req.params.id);
-    let tareas = await Tarea.obtenerTodas();
-    const index = tareas.findIndex(t => t.id === tareaId);
-    if (index === -1) return res.status(404).json({ error: "Tarea no encontrada" });
+    const tareaId = req.params.id;
+    const tarea = await Tarea.findByIdAndDelete(tareaId);
 
-    tareas.splice(index, 1);
-    await Tarea.guardarTodas(tareas);
-
+    if (!tarea) return res.status(404).json({ error: "Tarea no encontrada" });
     res.json({ mensaje: "Tarea eliminada correctamente" });
   } catch (error) {
     console.error("Error en eliminarTarea:", error);
@@ -168,101 +243,67 @@ const eliminarTarea = async (req, res) => {
   }
 };
 
-// Funcion auxiliar para comparar fechas
-// se utiliza al filtrar y apra no repetir codigo
-const compararFechas = (fecha1, fecha2, operador) => {
-  const date1 = new Date(fecha1);
-  const date2 = new Date(fecha2);
-  
-  switch (operador) {
-    case "=":
-    case "==":
-      return date1.getTime() === date2.getTime();
-    case ">":
-      return date1.getTime() > date2.getTime();
-    case ">=":
-      return date1.getTime() >= date2.getTime();
-    case "<":
-      return date1.getTime() < date2.getTime();
-    case "<=":
-      return date1.getTime() <= date2.getTime();
-    default:
-      return false;
-  }
-};
-
-// Filtrar tareas 
+// Filtrar tareas
 const filtrarTareas = async (req, res) => {
   try {
-    const { 
-      areaId, 
-      estado, 
-      prioridad, 
+    const {
+      areaId,
+      estado,
+      prioridad,
       fechaCreacionDesde,
       fechaCreacionHasta,
       fechaVencimientoDesde,
       fechaVencimientoHasta,
       fechaFinalizacionDesde,
-      fechaFinalizacionHasta
-    
+      fechaFinalizacionHasta,
     } = req.query;
-    
-    let tareas = await Tarea.obtenerTodas();
 
-    // Filtro por area
-    if (areaId) {
-      tareas = tareas.filter(t => t.areaId === parseInt(areaId));
-    }
+    let query = {};
 
-    // Filtro por estado
-    if (estado) {
-      const estadosValidos = ["pendiente", "en proceso", "finalizada"];
-      const estadoFiltro = estado.toLowerCase();
-      if (estadosValidos.includes(estadoFiltro)) {
-        tareas = tareas.filter(t => t.estado.toLowerCase() === estadoFiltro);
-      }
-    }
+    if (areaId) query.areaId = parseInt(areaId);
+    if (estado) query.estado = estado.toLowerCase();
+    if (prioridad) query.prioridad = prioridad.toLowerCase();
 
-    // Filtro por prioridad
-    if (prioridad) {
-      const prioridadesValidas = ["alta", "media", "baja"];
-      const prioridadFiltro = prioridad.toLowerCase();
-      if (prioridadesValidas.includes(prioridadFiltro)) {
-        tareas = tareas.filter(t => t.prioridad.toLowerCase() === prioridadFiltro);
-      }
-    }
+    // Filtros de fecha (Modo Mongoose)
+    if (fechaCreacionDesde || fechaCreacionHasta) query.fechaCreacion = {};
+    if (fechaCreacionDesde)
+      query.fechaCreacion.$gte = new Date(fechaCreacionDesde);
+    if (fechaCreacionHasta)
+      query.fechaCreacion.$lte = new Date(fechaCreacionHasta);
 
-   // Filtros por fechas
-    if (fechaCreacionDesde) tareas = tareas.filter(t => t.fechaCreacion && compararFechas(t.fechaCreacion, fechaCreacionDesde, ">="));
-    if (fechaCreacionHasta) tareas = tareas.filter(t => t.fechaCreacion && compararFechas(t.fechaCreacion, fechaCreacionHasta, "<="));
+    if (fechaVencimientoDesde || fechaVencimientoHasta)
+      query.fechaVencimiento = {};
+    if (fechaVencimientoDesde)
+      query.fechaVencimiento.$gte = new Date(fechaVencimientoDesde);
+    if (fechaVencimientoHasta)
+      query.fechaVencimiento.$lte = new Date(fechaVencimientoHasta);
 
-    if (fechaVencimientoDesde) tareas = tareas.filter(t => t.fechaVencimiento && compararFechas(t.fechaVencimiento, fechaVencimientoDesde, ">="));
-    if (fechaVencimientoHasta) tareas = tareas.filter(t => t.fechaVencimiento && compararFechas(t.fechaVencimiento, fechaVencimientoHasta, "<="));
+    if (fechaFinalizacionDesde || fechaFinalizacionHasta)
+      query.fechaFinalizacion = {};
+    if (fechaFinalizacionDesde)
+      query.fechaFinalizacion.$gte = new Date(fechaFinalizacionDesde);
+    if (fechaFinalizacionHasta)
+      query.fechaFinalizacion.$lte = new Date(fechaFinalizacionHasta);
 
-    if (fechaFinalizacionDesde) tareas = tareas.filter(t => t.fechaFinalizacion && compararFechas(t.fechaFinalizacion, fechaFinalizacionDesde, ">="));
-    if (fechaFinalizacionHasta) tareas = tareas.filter(t => t.fechaFinalizacion && compararFechas(t.fechaFinalizacion, fechaFinalizacionHasta, "<="));
+    const tareas = await Tarea.find(query);
 
     res.json(tareas);
-
   } catch (error) {
     console.error("Error filtrando tareas:", error);
     res.status(500).json({ error: "Error filtrando tareas" });
   }
-
-    
 };
 
 // Obtener tarea por ID
 const obtenerTarea = async (req, res) => {
   try {
-    const tareaId = parseInt(req.params.id);
-    const tareas = await Tarea.obtenerTodas();
-    const tarea = tareas.find(t => t.id === tareaId);
+    const tareaId = req.params.id;
+    const tarea = await Tarea.findById(tareaId).populate(
+      "empleadoId",
+      "nombre email"
+    );
 
-    if (!tarea) {
-      return res.status(404).json({ error: "Tarea no encontrada" });
-    }
-
+    if (!tarea) return res.status(404).json({ error: "Tarea no encontrada" });
     res.json(tarea);
   } catch (error) {
     console.error("Error en obtenerTarea:", error);
@@ -270,13 +311,11 @@ const obtenerTarea = async (req, res) => {
   }
 };
 
-
-// exporta 
-module.exports = { 
-  listarTareas, 
-  crearTarea, 
-  editarTarea, 
-  eliminarTarea, 
+module.exports = {
+  listarTareas,
+  crearTarea,
+  editarTarea,
+  eliminarTarea,
   filtrarTareas,
-  obtenerTarea
+  obtenerTarea,
 };

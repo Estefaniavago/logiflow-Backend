@@ -1,0 +1,37 @@
+doctype html
+html
+  head
+    title Lista de Empleados
+    // Estilos básicos para que la tabla se vea bien
+    style.
+      body { font-family: Arial, sans-serif; margin: 20px; }
+      h1 { color: #333; }
+      table { border-collapse: collapse; width: 100%; }
+      th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+      th { background-color: #f2f2f2; }
+      tr:nth-child(even) { background-color: #f9f9f9; }
+  body
+    h1 Empleados de LogiFlow
+    
+    table
+      thead
+        tr
+          th Nombre
+          th DNI
+          th Email
+          th Área (ID)
+          th Rol (ID)
+          th Activo
+      tbody
+        
+        each emp in empleados
+          tr
+            td= emp.nombre
+            td= emp.dni
+            td= emp.email
+            td= emp.areaId
+            td= emp.rolId
+            td= emp.activo ? 'Sí' : 'No'
+        else
+          tr
+            td(colspan="6") No hay empleados para mostrar.

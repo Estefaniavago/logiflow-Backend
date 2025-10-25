@@ -1,0 +1,42 @@
+doctype html
+html
+  head
+    title Lista de Tareas
+    style.
+      body { font-family: Arial, sans-serif; margin: 20px; }
+      h1 { color: #333; }
+      table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+      th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+      th { background-color: #f2f2f2; }
+      tr:nth-child(even) { background-color: #f9f9f9; }
+      nav { margin-bottom: 20px; }
+      nav a { margin-right: 15px; font-size: 1.2em; }
+  body
+    nav
+      a(href="/vistas/empleados") Ver Empleados
+      a(href="/vistas/tareas") Ver Tareas
+
+    h1 Tareas de LogiFlow
+    
+    table
+      thead
+        tr
+          th Título
+          th Descripción
+          th Empleado Asignado
+          th Área (ID)
+          th Estado
+          th Prioridad
+      tbody
+        each tarea in tareas
+          tr
+            td= tarea.titulo
+            td= tarea.descripcion
+            //- Verificamos si el empleadoId existe antes de mostrar el nombre
+            td= tarea.empleadoId ? tarea.empleadoId.nombre : 'Sin asignar'
+            td= tarea.areaId
+            td= tarea.estado
+            td= tarea.prioridad
+        else
+          tr
+            td(colspan="6") No hay tareas para mostrar.
