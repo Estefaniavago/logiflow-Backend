@@ -161,5 +161,5 @@ Rutas accesibles desde un navegador web:
 
 Proyecto desarrollado por:
 
-*   **Estefanía Vago**: Desarrollo del Backend, Modelado de Datos.
-*   **Vanesa Soria**: Desarrollo de Controladores, Implementación de Vistas (Pug), Pruebas de Endpoints y Migración a MongoDB.
+*   **Estefanía Vago**: Desarrollo del Backend, Modelado de Datos, Implementación de Vistas (Pug)
+*   **Vanesa Soria**: Desarrollo de Controladores, Pruebas de Endpoints y Migración a MongoDB.
