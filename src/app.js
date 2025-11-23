@@ -1,7 +1,9 @@
 const express = require("express");
+const cookieParser = require("cookie-parser");
 const app = express();
 const path = require("path");
 const { validarDatos, manejarErrores } = require("./middlewares/logger");
+const { autenticarVista } = require("./middlewares/auth");
 const conectarDB = require("./config/db");
 
 conectarDB();
@@ -18,29 +20,27 @@ app.set('json spaces', 2);
 // Middlewares globales
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(validarDatos);
 
-// Rutas
+// Rutas de autenticación (públicas)
+const authRoutes = require("./routes/authRoutes");
+app.use("/auth", authRoutes);
+
+// Rutas API protegidas
 const tareasRoutes = require("./routes/tareasRoutes");
 const empleadosRoutes = require("./routes/empleadosRoutes");
 
 app.use("/tareas", tareasRoutes);
 app.use("/empleados", empleadosRoutes);
 
-//  RUTAS PARA VISTAS 
+//  RUTAS PARA VISTAS (protegidas)
 const viewsRoutes = require('./routes/viewsRoutes');
-app.use("/vistas", viewsRoutes);
+app.use("/vistas", autenticarVista, viewsRoutes);
 
-// Ruta principal
-app.get("/", (req, res) => {
-  res.json({
-    mensaje: "Servidor LogiFlow funcionando correctamente",
-    endpoints: {
-      tareas: "/tareas",
-      empleados: "/empleados"
-    }
-  });
-});
+// Ruta principal - Dashboard (protegida)
+const viewsController = require('./controllers/viewsController');
+app.get("/", autenticarVista, viewsController.mostrarInicio);
 
 // Middleware para rutas no encontradas
 app.use((req, res) => {

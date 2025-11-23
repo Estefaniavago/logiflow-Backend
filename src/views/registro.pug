@@ -1,0 +1,171 @@
+doctype html
+html(lang="es")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Registro - LogiFlow
+    style.
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      
+      .register-container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        padding: 40px;
+        width: 100%;
+        max-width: 500px;
+        animation: fadeIn 0.5s ease-in;
+      }
+      
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      .logo {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      
+      .logo h1 {
+        font-size: 2.5em;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 10px;
+      }
+      
+      .logo p {
+        color: #666;
+        font-size: 1.1em;
+      }
+      
+      .form-group {
+        margin-bottom: 20px;
+      }
+      
+      label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+        font-weight: 500;
+      }
+      
+      input[type="text"],
+      input[type="email"],
+      input[type="password"],
+      select {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 1em;
+        transition: all 0.3s;
+      }
+      
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+      
+      .btn {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1em;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-top: 10px;
+      }
+      
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+      }
+      
+      .links {
+        text-align: center;
+        margin-top: 20px;
+      }
+      
+      .links a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+      }
+      
+      .links a:hover {
+        text-decoration: underline;
+      }
+      
+      .error-message {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border-left: 4px solid #dc3545;
+      }
+
+  body
+    .register-container
+      .logo
+        h1 🚀 LogiFlow
+        p Crear nueva cuenta
+      
+      if error
+        .error-message= error
+      
+      form(action="/auth/registro", method="POST")
+        .form-group
+          label(for="nombre") Nombre completo
+          input#nombre(type="text", name="nombre", required, placeholder="Juan Pérez")
+        
+        .form-group
+          label(for="email") Email
+          input#email(type="email", name="email", required, placeholder="tu@email.com")
+        
+        .form-group
+          label(for="password") Contraseña
+          input#password(type="password", name="password", required, placeholder="Mínimo 6 caracteres", minlength="6")
+        
+        .form-group
+          label(for="rol") Rol
+          select#rol(name="rol")
+            option(value="usuario") Usuario
+            option(value="supervisor") Supervisor
+            option(value="admin") Administrador
+        
+        button.btn(type="submit") Registrarse
+      
+      .links
+        p ¿Ya tienes cuenta? 
+          a(href="/auth/login") Inicia sesión aquí
+

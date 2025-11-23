@@ -1,0 +1,438 @@
+doctype html
+html(lang="es")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Dashboard - LogiFlow
+    style.
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+      
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+      }
+      
+      header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      
+      .header-left h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      }
+      
+      .header-left p {
+        opacity: 0.9;
+        font-size: 1.1em;
+      }
+      
+      .header-right {
+        text-align: right;
+      }
+      
+      .user-info {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 15px 25px;
+        border-radius: 10px;
+        backdrop-filter: blur(10px);
+        margin-bottom: 10px;
+      }
+      
+      .user-info strong {
+        display: block;
+        font-size: 1.2em;
+        margin-bottom: 5px;
+      }
+      
+      .user-info span {
+        font-size: 0.9em;
+        opacity: 0.9;
+      }
+      
+      .logout-btn {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 2px solid white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s;
+        font-weight: 500;
+      }
+      
+      .logout-btn:hover {
+        background: white;
+        color: #667eea;
+      }
+      
+      nav {
+        background: #f8f9fa;
+        padding: 15px 40px;
+        border-bottom: 2px solid #e9ecef;
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+      }
+      
+      nav a {
+        color: #667eea;
+        text-decoration: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        transition: all 0.3s;
+        font-weight: 500;
+        border: 2px solid transparent;
+      }
+      
+      nav a:hover {
+        background: #667eea;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+      }
+      
+      nav a.active {
+        background: #667eea;
+        color: white;
+      }
+      
+      .content {
+        padding: 40px;
+      }
+      
+      .welcome-section {
+        text-align: center;
+        margin-bottom: 40px;
+        padding: 30px;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        border-radius: 15px;
+      }
+      
+      .welcome-section h2 {
+        font-size: 2.2em;
+        color: #333;
+        margin-bottom: 10px;
+      }
+      
+      .welcome-section p {
+        font-size: 1.1em;
+        color: #666;
+      }
+      
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+      }
+      
+      .stat-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .stat-card.tareas {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      }
+      
+      .stat-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+      }
+      
+      .stat-card .icon {
+        font-size: 3em;
+        margin-bottom: 15px;
+        display: block;
+      }
+      
+      .stat-card .number {
+        font-size: 3em;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+      
+      .stat-card .label {
+        font-size: 1.1em;
+        opacity: 0.95;
+      }
+      
+      .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+      }
+      
+      .action-card {
+        background: white;
+        border: 2px solid #e9ecef;
+        border-radius: 20px;
+        padding: 40px;
+        text-align: center;
+        text-decoration: none;
+        color: #333;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      }
+      
+      .action-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        border-color: #667eea;
+      }
+      
+      .action-card.empleados:hover {
+        border-color: #667eea;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+      }
+      
+      .action-card.tareas:hover {
+        border-color: #f5576c;
+        background: linear-gradient(135deg, rgba(240, 147, 251, 0.05) 0%, rgba(245, 87, 108, 0.05) 100%);
+      }
+      
+      .action-card .icon {
+        font-size: 4em;
+        margin-bottom: 20px;
+        display: block;
+      }
+      
+      .action-card h3 {
+        font-size: 1.8em;
+        margin-bottom: 15px;
+        color: #333;
+      }
+      
+      .action-card p {
+        color: #666;
+        font-size: 1em;
+        line-height: 1.6;
+      }
+      
+      .recent-tasks {
+        background: #f8f9fa;
+        border-radius: 20px;
+        padding: 30px;
+        margin-top: 40px;
+      }
+      
+      .recent-tasks h3 {
+        font-size: 1.8em;
+        color: #333;
+        margin-bottom: 20px;
+      }
+      
+      .task-item {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        border-left: 4px solid #667eea;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s;
+      }
+      
+      .task-item:hover {
+        transform: translateX(5px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      
+      .task-item h4 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 1.2em;
+      }
+      
+      .task-item p {
+        color: #666;
+        margin-bottom: 10px;
+      }
+      
+      .task-meta {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        font-size: 0.9em;
+      }
+      
+      .badge {
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.85em;
+        font-weight: 600;
+      }
+      
+      .badge-pendiente {
+        background: #fff3cd;
+        color: #856404;
+      }
+      
+      .badge-en-proceso {
+        background: #cfe2ff;
+        color: #084298;
+      }
+      
+      .badge-completada {
+        background: #d1e7dd;
+        color: #0f5132;
+      }
+      
+      .badge-area {
+        background: #e7f3ff;
+        color: #004085;
+      }
+      
+      .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: #6c757d;
+      }
+      
+      @media (max-width: 768px) {
+        header {
+          flex-direction: column;
+          text-align: center;
+        }
+        
+        .header-right {
+          text-align: center;
+          width: 100%;
+          margin-top: 20px;
+        }
+        
+        .content {
+          padding: 20px;
+        }
+        
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+        
+        .actions-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+  body
+    .container
+      header
+        .header-left
+          h1 🚀 LogiFlow
+          p Sistema de Gestión de Tareas y Empleados
+        .header-right
+          .user-info
+            strong 👤 #{usuario.nombre}
+            span #{usuario.email} • Rol: #{usuario.rol}
+          a.logout-btn(href="/auth/logout") Cerrar Sesión
+      
+      nav
+        a.active(href="/") 🏠 Inicio
+        a(href="/vistas/empleados") 👥 Empleados
+        a(href="/vistas/tareas") 📋 Tareas
+      
+      .content
+        .welcome-section
+          h2 ¡Bienvenido, #{usuario.nombre}!
+          p Aquí tienes un resumen de tu sistema LogiFlow
+        
+        .stats-grid
+          .stat-card.empleados
+            span.icon 👥
+            span.number= totalEmpleados
+            span.label Total Empleados
+          
+          .stat-card.empleados
+            span.icon ✅
+            span.number= empleadosActivos
+            span.label Empleados Activos
+          
+          .stat-card.tareas
+            span.icon 📋
+            span.number= totalTareas
+            span.label Total Tareas
+          
+          .stat-card.tareas
+            span.icon ⏳
+            span.number= tareasPendientes
+            span.label Pendientes
+          
+          .stat-card.tareas
+            span.icon 🔄
+            span.number= tareasEnProceso
+            span.label En Proceso
+          
+          .stat-card.tareas
+            span.icon ✔️
+            span.number= tareasCompletadas
+            span.label Completadas
+        
+        .actions-grid
+          a.action-card.empleados(href="/vistas/empleados")
+            span.icon 👥
+            h3 Gestionar Empleados
+            p Ver, crear y administrar el personal de la empresa
+        
+          a.action-card.tareas(href="/vistas/tareas")
+            span.icon 📋
+            h3 Gestionar Tareas
+            p Organizar y hacer seguimiento de todas las tareas
+        
+        if tareasRecientes && tareasRecientes.length > 0
+          .recent-tasks
+            h3 📌 Tareas Recientes
+            each tarea in tareasRecientes
+              .task-item
+                h4= tarea.titulo
+                p= tarea.descripcion
+                .task-meta
+                  if tarea.estado === 'pendiente'
+                    span.badge.badge-pendiente= tarea.estado
+                  else if tarea.estado === 'en_proceso'
+                    span.badge.badge-en-proceso= tarea.estado
+                  else if tarea.estado === 'completada'
+                    span.badge.badge-completada= tarea.estado
+                  else
+                    span.badge= tarea.estado
+                  span.badge.badge-area= tarea.areaNombre
+                  if tarea.empleadoId
+                    span 👤 #{tarea.empleadoId.nombre}
+                  else
+                    span ⚠️ Sin asignar
+        else
+          .recent-tasks
+            h3 📌 Tareas Recientes
+            .empty-state
+              p No hay tareas recientes para mostrar
+

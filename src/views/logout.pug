@@ -1,0 +1,196 @@
+doctype html
+html(lang="es")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Sesión Cerrada - LogiFlow
+    style.
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      
+      .logout-container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        padding: 60px 50px;
+        width: 100%;
+        max-width: 500px;
+        text-align: center;
+        animation: fadeIn 0.6s ease-in;
+      }
+      
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px) scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+      
+      .icon {
+        font-size: 6em;
+        margin-bottom: 30px;
+        animation: wave 2s ease-in-out infinite;
+        display: block;
+      }
+      
+      @keyframes wave {
+        0%, 100% {
+          transform: rotate(0deg) scale(1);
+        }
+        25% {
+          transform: rotate(15deg) scale(1.1);
+        }
+        50% {
+          transform: rotate(0deg) scale(1.05);
+        }
+        75% {
+          transform: rotate(-15deg) scale(1.1);
+        }
+      }
+      
+      h1 {
+        font-size: 2.8em;
+        color: #333;
+        margin-bottom: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      
+      .user-info {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        padding: 25px;
+        border-radius: 15px;
+        margin: 30px 0;
+        border: 2px solid rgba(102, 126, 234, 0.2);
+      }
+      
+      .user-info p {
+        color: #666;
+        font-size: 1.1em;
+        margin-bottom: 10px;
+      }
+      
+      .user-info strong {
+        color: #667eea;
+        font-size: 1.3em;
+        display: block;
+        margin-top: 10px;
+      }
+      
+      .message {
+        color: #666;
+        font-size: 1.15em;
+        line-height: 1.8;
+        margin-bottom: 40px;
+      }
+      
+      .message p {
+        margin-bottom: 15px;
+      }
+      
+      .btn {
+        padding: 16px 40px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.2em;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+      }
+      
+      .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+      }
+      
+      .btn:active {
+        transform: translateY(-1px);
+      }
+      
+      .countdown {
+        margin-top: 30px;
+        color: #999;
+        font-size: 0.95em;
+      }
+      
+      @media (max-width: 480px) {
+        .logout-container {
+          padding: 40px 30px;
+        }
+        
+        h1 {
+          font-size: 2.2em;
+        }
+        
+        .icon {
+          font-size: 5em;
+        }
+        
+        .message {
+          font-size: 1em;
+        }
+        
+        .btn {
+          padding: 14px 30px;
+          font-size: 1.1em;
+        }
+      }
+
+  body
+    .logout-container
+      .icon 👋
+      h1 ¡Hasta Próximo!
+      
+      .user-info
+        p Gracias por usar LogiFlow
+        if usuario && usuario.nombre
+          strong #{usuario.nombre}
+      
+      .message
+        p Tu sesión ha sido cerrada correctamente.
+        p Esperamos verte pronto.
+      
+      a.btn(href="/auth/login") Iniciar Sesión Nuevamente
+      
+      .countdown
+        p Serás redirigido automáticamente en 
+          span#countdown 5
+          |  segundos...
+    
+    script.
+      let countdown = 5;
+      const countdownElement = document.getElementById('countdown');
+      
+      const timer = setInterval(() => {
+        countdown--;
+        countdownElement.textContent = countdown;
+        
+        if (countdown <= 0) {
+          clearInterval(timer);
+          window.location.href = '/auth/login';
+        }
+      }, 1000);

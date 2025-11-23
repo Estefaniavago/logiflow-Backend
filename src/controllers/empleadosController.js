@@ -2,7 +2,7 @@ const Empleado = require("../models/empleadosModel");
 const Rol = require("../models/rolModel");
 const Area = require("../models/areaModel");
 
-// Helper para validar DNI (ahora consulta Mongoose)
+// Helper para validar DNI 
 const validarDniUnico = async (dni, excludeId = null) => {
   const query = { dni: dni };
   if (excludeId) {
@@ -30,6 +30,11 @@ const crearEmpleado = async (req, res) => {
     const { nombre, dni, email, telefono, areaId, rolId } = req.body;
     if (!nombre || !dni || !areaId || !rolId) {
       return res.status(400).json({ error: "Faltan datos obligatorios..." });
+    }
+
+    // Validar formato de DNI (exactamente 8 dígitos numéricos)
+    if (!/^\d{8}$/.test(dni)) {
+      return res.status(400).json({ error: "El DNI debe ser exactamente 8 dígitos numéricos" });
     }
 
     // Validación con Mongoose
@@ -77,6 +82,11 @@ const editarEmpleado = async (req, res) => {
 
     // 1. Validar DNI (si se está intentando cambiar)
     if (datos.dni) {
+      // Validar formato de DNI (exactamente 8 dígitos numéricos)
+      if (!/^\d{8}$/.test(datos.dni)) {
+        return res.status(400).json({ error: "El DNI debe ser exactamente 8 dígitos numéricos" });
+      }
+      
       // Pasamos 'empleadoId' para que la validación ignore a este mismo empleado
       const dniUnico = await validarDniUnico(datos.dni, empleadoId);
       if (!dniUnico) {
