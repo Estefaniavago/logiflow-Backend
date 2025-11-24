@@ -20,13 +20,22 @@ Este proyecto gestiona empleados, tareas, áreas y roles, proveyendo una arquite
 * **API REST:** Endpoints que devuelven JSON, listos para ser consumidos por un frontend (React, Vue, etc.).
 * **Vistas SSR:** Páginas HTML renderizadas en el servidor con el motor de plantillas **Pug**, en respuesta a la devolución de la primera entrega.
 
-## 🚀 Características Principales
+  ## 🚀 Características Principales
 
 * **CRUD completo** para Tareas y Empleados.
 * **Gestión de entidades** relacionadas (Roles y Áreas).
 * **Validación de datos** a nivel de Schema con Mongoose (ej. DNI único).
 * **Filtrado avanzado** en la API por múltiples parámetros.
 * **Poblado de relaciones** (`.populate()`) para mostrar datos de empleados en las tareas.
+
+## 🔐 Seguridad y Autenticación
+
+El sistema implementa un esquema robusto de seguridad que incluye:
+
+* **Autenticación JWT:** Uso de **JSON Web Tokens** para firmar y validar sesiones de forma segura.
+* **Control de Acceso (RBAC):** Autorización basada en roles (`admin`, `supervisor`, `usuario`) para restringir el acceso a endpoints sensibles.
+* **Protección de Vistas:** Middleware específico (`autenticarVista`) que protege las rutas de interfaz y gestiona redirecciones automáticas al login.
+* **Cookies Seguras:** Almacenamiento del token en cookies `httpOnly` para mitigar riesgos de seguridad en el navegador.
 
 ## 🛠️ Stack Tecnológico
 
