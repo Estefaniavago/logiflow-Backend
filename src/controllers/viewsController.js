@@ -98,33 +98,40 @@ const mostrarEmpleados = async (req, res) => {
 // Muestra la vista de tareas
 const mostrarTareas = async (req, res) => {
   try {
-    const tareas = await Tarea.find().populate("empleadoId", "nombre email").lean();
+    const tareas = await Tarea.find()
+      .populate("empleadoId", "nombre email")
+      .lean();
     const areas = await Area.find().lean();
-
+    
+    const empleados = await Empleado.find().lean(); // Para asignar empleado
     // Crear mapa de áreas
     const areasMap = {};
-    areas.forEach(area => { areasMap[area.id] = area.nombre; });
+    areas.forEach((area) => {
+      areasMap[area.id] = area.nombre;
+    });
 
     // Agregar nombres de áreas a las tareas
-    tareas.forEach(tarea => {
+    tareas.forEach((tarea) => {
       tarea.areaNombre = areasMap[tarea.areaId] || `Área ${tarea.areaId}`;
     });
 
     // Estadísticas
     const estadisticas = {
       total: tareas.length,
-      pendientes: tareas.filter(t => t.estado === 'pendiente').length,
-      enProceso: tareas.filter(t => t.estado === 'en_proceso').length,
-      completadas: tareas.filter(t => t.estado === 'completada').length,
-      alta: tareas.filter(t => t.prioridad === 'alta').length,
-      media: tareas.filter(t => t.prioridad === 'media').length,
-      baja: tareas.filter(t => t.prioridad === 'baja').length
+      pendientes: tareas.filter((t) => t.estado === "pendiente").length,
+      enProceso: tareas.filter((t) => t.estado === "en_proceso").length,
+      completadas: tareas.filter((t) => t.estado === "completada").length,
+      alta: tareas.filter((t) => t.prioridad === "alta").length,
+      media: tareas.filter((t) => t.prioridad === "media").length,
+      baja: tareas.filter((t) => t.prioridad === "baja").length,
     };
 
-    res.render("listaTareas", { 
+    res.render("listaTareas", {
       usuario: req.usuario,
       tareas: tareas,
-      estadisticas: estadisticas
+      estadisticas: estadisticas,
+      areas: areas, //Enviamos areas a la vista
+      empleados: empleados,
     });
   } catch (error) {
     console.error("Error al cargar vista de tareas:", error);
